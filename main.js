@@ -56,21 +56,39 @@
     this.board = board;
     this.board.bars.push(this);
     this.kind = "rectangle";
+    this.speed = 10;
   }
 
   self.Bar.prototype = {
-    down: function () { },
-    up: function () { }
+    down: function () {
+      this.y += this.speed;
+    },
+    up: function () {
+      this.y -= this.speed;
+    },
+    toString: function(){
+      return "x: "+ this.x +" y: "+ this.y;
+    }
   }
 })();
 
-window.addEventListener("load", main);
+var board = new Board(800, 400);
+let bar = new Bar(20, 100, 40, 100, board);
+let bar2 = new Bar(730, 100, 40, 100, board);
+var canvas = document.getElementById("canvas");
+var board_View = new BoardView(canvas, board);
+
+document.addEventListener("keydown", function (ev) {
+  if (ev.key == 'ArrowUp') {
+    bar.up();
+  } else if (ev.key == 'ArrowDown') {
+    bar.down();
+  }
+  console.log(""+bar);
+});
+
+self.addEventListener("load", main);
 
 function main() {
-  var board = new Board(800, 400);
-  let bar = new Bar(20, 100, 40, 100, board);
-  let bar2 = new Bar(730, 100, 40, 100, board);
-  var canvas = document.getElementById("canvas");
-  var board_View = new BoardView(canvas, board);
   board_View.draw();
 };
