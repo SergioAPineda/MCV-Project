@@ -11,15 +11,15 @@
 
   self.Board.prototype = {
     get elements() {
-      var elements = this.bars.map(function(bar){return bar; });
+      var elements = this.bars.map(function (bar) { return bar; });
       elements.push(this.ball);
       return elements;
     }
   }
 })();
 
-(function(){
-  self.Ball = function(x,y,radius, board){
+(function () {
+  self.Ball = function (x, y, radius, board) {
     this.x = x;
     this.y = y;
     this.radius = radius;
@@ -36,34 +36,34 @@
   }
 
   self.Ball.prototype = {
-    endGame: function(){
-      location.reload()
+    endGame: function () {
+      let message = document.querySelector(".gameOver");
+      message.innerText = "Juego terminado!";
+      setTimeout(function () {
+        location.reload()
+      }, 3000);
     },
-    move: function(){
-      if(this.y < 1){this.speed_y = 1;}
-      if(this.y > board.height){this.speed_y = -1;}
-      if(this.x < 1){this.endGame()}
-      if(this.x > board.width){this.endGame()}
+    move: function () {
+      if (this.y < 1) { this.speed_y = 1; }
+      if (this.y > board.height) { this.speed_y = -1; }
+      if (this.x < 1) { this.endGame() }
+      if (this.x > board.width) { this.endGame() }
       this.x += (this.speed_x * this.direction);
       this.y += this.speed_y;
     },
-    get width(){
+    get width() {
       return this.radius * 2;
     },
-    get height(){
+    get height() {
       return this.radius * 2;
     },
-    collision: function(bar){
-      var relative_intersect_y = ( bar.y + (bar.height / 2)) - this.y;
-
+    collision: function (bar) {
+      var relative_intersect_y = (bar.y + (bar.height / 2)) - this.y;
       var normalized_intersect_y = relative_intersect_y / (bar.height / 2);
-
       this.bounce_angle = normalized_intersect_y * this.max_bounce_angle;
-
       this.speed_y = this.speed * -Math.sin(this.bounce_angle);
       this.speed_x = this.speed * Math.cos(this.bounce_angle);
-
-      if(this.x > (this.board.width / 2)) this.direction = -1;
+      if (this.x > (this.board.width / 2)) this.direction = -1;
       else this.direction = 1;
     },
   }
@@ -79,8 +79,8 @@
   }
 
   self.BoardView.prototype = {
-    clean: function(){
-      this.ctx.clearRect(0,0, board.width, board.height);
+    clean: function () {
+      this.ctx.clearRect(0, 0, board.width, board.height);
     },
     draw: function () {
       for (var i = this.board.elements.length - 1; i >= 0; i--) {
@@ -88,16 +88,16 @@
         draw(this.ctx, el);
       };
     },
-    check_collisions: function(){
+    check_collisions: function () {
       for (var i = this.board.bars.length - 1; i >= 0; i--) {
         var bar = this.board.bars[i];
-        if(hit(bar, this.board.ball)){
+        if (hit(bar, this.board.ball)) {
           this.board.ball.collision(bar);
         }
       }
     },
-    play: function(){
-      if(this.board.playing){
+    play: function () {
+      if (this.board.playing) {
         this.clean()
         this.draw();
         this.check_collisions();
@@ -106,23 +106,23 @@
     }
 
   }
-  function hit(a, b){
+  function hit(a, b) {
 
 
-      var hit = false;
-      if(b.x + b.width >= a.x && b.x < a.x + a.width){
-        if(b.y + b.height >= a.y && b.y <a.y + a.height)
+    var hit = false;
+    if (b.x + b.width >= a.x && b.x < a.x + a.width) {
+      if (b.y + b.height >= a.y && b.y < a.y + a.height)
         hit = true;
-      }
-      if(b.x <= a.x && b.x + b.width >= a.x + a.width){
-        if(b.y <= a.y && b.y + b.height >= a.y + a.height)
-          hit = true;
-      }
-      if(a.x <= b.y && a.x + a.height >= b.x + b.height){
-        if(a.y <= b.y && a.y + a.height >= b.y + b.height)
-          hit = true;
-      }
-      return hit;  
+    }
+    if (b.x <= a.x && b.x + b.width >= a.x + a.width) {
+      if (b.y <= a.y && b.y + b.height >= a.y + a.height)
+        hit = true;
+    }
+    if (a.x <= b.y && a.x + a.height >= b.x + b.height) {
+      if (a.y <= b.y && a.y + a.height >= b.y + b.height)
+        hit = true;
+    }
+    return hit;
   }
 
   function draw(ctx, element) {
@@ -132,7 +132,7 @@
         break;
       case "circle":
         ctx.beginPath();
-        ctx.arc(element.x, element.y, element.radius,0,7);
+        ctx.arc(element.x, element.y, element.radius, 0, 7);
         ctx.fill();
         ctx.closePath();
         break;
@@ -159,8 +159,8 @@
     up: function () {
       this.y -= this.speed;
     },
-    toString: function(){
-      return "x: "+ this.x +" y: "+ this.y;
+    toString: function () {
+      return "x: " + this.x + " y: " + this.y;
     }
   }
 })();
@@ -170,9 +170,10 @@ let bar = new Bar(20, 100, 40, 100, board);
 let bar2 = new Bar(730, 100, 40, 100, board);
 var canvas = document.getElementById("canvas");
 var board_View = new BoardView(canvas, board);
-let ball = new Ball(350,100,10,board); 
+let ball = new Ball(350, 100, 10, board);
 
 document.addEventListener("keydown", function (ev) {
+  console.log(ev.key)
   if (ev.key == 'w') {
     ev.preventDefault();
     bar.up();
@@ -186,7 +187,7 @@ document.addEventListener("keydown", function (ev) {
   } else if (ev.key == 'ArrowDown') {
     ev.preventDefault();
     bar2.down();
-  } else if(ev.key == 'p'){
+  } else if (ev.key == 'Enter') {
     ev.preventDefault();
     board.playing = !board.playing;
   }
