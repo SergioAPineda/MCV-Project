@@ -36,9 +36,16 @@
   }
 
   self.Ball.prototype = {
+    endGame: function(){
+      location.reload()
+    },
     move: function(){
+      if(this.y < 1){this.speed_y = 1;}
+      if(this.y > board.height){this.speed_y = -1;}
+      if(this.x < 1){this.endGame()}
+      if(this.x > board.width){this.endGame()}
       this.x += (this.speed_x * this.direction);
-      this.y += (this.speed_y);
+      this.y += this.speed_y;
     },
     get width(){
       return this.radius * 2;
@@ -58,7 +65,7 @@
 
       if(this.x > (this.board.width / 2)) this.direction = -1;
       else this.direction = 1;
-    }
+    },
   }
 })();
 
@@ -100,6 +107,8 @@
 
   }
   function hit(a, b){
+
+
       var hit = false;
       if(b.x + b.width >= a.x && b.x < a.x + a.width){
         if(b.y + b.height >= a.y && b.y <a.y + a.height)
@@ -164,18 +173,17 @@ var board_View = new BoardView(canvas, board);
 let ball = new Ball(350,100,10,board); 
 
 document.addEventListener("keydown", function (ev) {
-  console.log(ev.key)
-  if (ev.key == 'ArrowUp') {
+  if (ev.key == 'w') {
     ev.preventDefault();
     bar.up();
-  } else if (ev.key == 'ArrowDown') {
+  } else if (ev.key == 's') {
     ev.preventDefault();
     bar.down();
   }
-  if (ev.key == 'ArrowRight') {
+  if (ev.key == 'ArrowUp') {
     ev.preventDefault();
     bar2.up();
-  } else if (ev.key == 'ArrowLeft') {
+  } else if (ev.key == 'ArrowDown') {
     ev.preventDefault();
     bar2.down();
   } else if(ev.key == 'p'){
